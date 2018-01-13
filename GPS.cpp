@@ -238,7 +238,13 @@ uint8_t GPS::parse(const char* nmea, const uint32_t now)
     if (strstr(nmea, "$GPGGA") == nmea) {
         if (strlen(nmea) < 65) return PARSED_UNKNOWN; // No fix
         return parseGGA(nmea, now);
-    } else if (strstr(nmea, "$GPRMC") == nmea) {
+    } else if (strstr(nmea, "$GNGGA") == nmea) { // If GPGGA is not found, check for GNGGA
+        if (strlen(nmea) < 65) return PARSED_UNKNOWN; // No fix
+        return parseGGA(nmea, now);
+    } else if (strstr(nmea, "$GPRMC") == nmea) { 
+        if (strlen(nmea) < 65) return PARSED_UNKNOWN; // No fix
+        return parseRMC(nmea, now);
+    } else if (strstr(nmea, "$GNRMC") == nmea) { // If GPRMC is not found, check for GNRMC
         if (strlen(nmea) < 65) return PARSED_UNKNOWN; // No fix
         return parseRMC(nmea, now);
     } else if (strstr(nmea, "$PMTK001") == nmea) {
